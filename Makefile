@@ -1,11 +1,14 @@
 # Define variables
 GO=go
 GOMOD=$(GO) mod
+GOTOOL=$(GO) tool
 GOBUILD=$(GO) build
 GOTEST=$(GO) test
 GOFMT=$(GO) fmt 
 GOCLEAN=$(GO) clean 
 BINARY_NAME=delio-mini
+CPU_PROF_NAME=cpu.prof
+MEM_PROF_NAME=mem.prof
 
 # Define targets
 .PHONY: all
@@ -38,5 +41,13 @@ fmt:
 gh-workflow:
 	set -e
 	make all
-	./delio-mini
+	./${BINARY_NAME}
 	make clean
+
+.PHONY: bench
+bench:
+	mkdir ./bench
+	$(GOTEST) -cpuprofile ./bench/${CPU_PROF_NAME} -memprofile ./bench/${MEM_PROF_NAME} -benchmem -bench . | tee | grep -v Ch
+	$(GOTOOL) pprof -top ./bench/${CPU_PROF_NAME}
+	$(GOTOOL) pprof -top ./bench/${MEM_PROF_NAME}
+	rm -rf bench
