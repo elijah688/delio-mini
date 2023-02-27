@@ -50,4 +50,4 @@ bench:
 	$(GOTEST) -cpuprofile ./bench/${CPU_PROF_NAME} -memprofile ./bench/${MEM_PROF_NAME} -benchmem -bench . | tee | grep -v Ch
 	$(GOTOOL) pprof -top ./bench/${CPU_PROF_NAME}
 	$(GOTOOL) pprof -top ./bench/${MEM_PROF_NAME}
-	rm -rf bench
+	rm -rf bench ./${BINARY_NAME}.test
